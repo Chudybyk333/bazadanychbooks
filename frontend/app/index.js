@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { View, TextInput, Button, Text } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useAuth } from '../context/AuthContext';
@@ -11,10 +11,18 @@ export default function LoginScreen() {
 
   const handleLogin = () => {
     login(username, password);
-    if (username === 'admin' && password === 'admin') {
-      router.replace('/home');
-    }
   };
+
+  // Po zalogowaniu — przekieruj na właściwą stronę
+  useEffect(() => {
+    if (user) {
+      if (user.role === 'admin') {
+        router.replace('/admin/home');
+      } else {
+        router.replace('/home');
+      }
+    }
+  }, [user]);
 
   return (
     <View style={{ padding: 20 }}>
@@ -25,3 +33,4 @@ export default function LoginScreen() {
     </View>
   );
 }
+

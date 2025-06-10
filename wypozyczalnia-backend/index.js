@@ -6,6 +6,8 @@ const loansRoutes = require('./routes/loansRoutes');
 const usersRoutes = require('./routes/usersRoutes');
 const authorsRoutes = require('./routes/authorsRoutes');
 const reviewsRoutes = require('./routes/reviewsRoutes');
+const categoriesRoutes = require('./routes/categories');
+
 
 const app = express();
 app.use(cors());
@@ -17,7 +19,7 @@ app.use('/loans', loansRoutes);
 app.use('/users', usersRoutes);
 app.use('/authors', authorsRoutes);
 app.use('/reviews', reviewsRoutes);
-
+app.use('/categories', categoriesRoutes);
 
 // Test endpoint
 app.get('/', (req, res) => res.send('API działa'));
