@@ -47,3 +47,42 @@ exports.getAllBooks = (req, res) => {
   });
 };
 
+
+// POST /books
+exports.addBook = async (req, res) => {
+  const { title, authorName, categoryId } = req.body;
+
+  if (!title || !authorName || !categoryId) {
+    return res.status(400).json({ message: 'Brakuje wymaganych danych' });
+  }
+
+  try {
+    // 1. Sprawdź, czy autor istnieje
+    let [authorRows] = await db.promise().query('SELECT id FROM authors WHERE name = ?', [authorName]);
+
+    let authorId;
+
+    if (authorRows.length > 0) {
+      authorId = authorRows[0].id;
+    } else {
+      // 2. Jeśli nie istnieje — dodaj nowego autora
+      const [insertAuthorResult] = await db.promise().query(
+        'INSERT INTO authors (name) VALUES (?)',
+        [authorName]
+      );
+      authorId = insertAuthorResult.insertId;
+    }
+
+    // 3. Dodaj książkę
+    await db.promise().query(
+      'INSERT INTO books (title, authors_id, categories_id) VALUES (?, ?, ?)',
+      [title, authorId, categoryId]
+    );
+
+    res.status(201).json({ message: 'Książka została dodana' });
+  } catch (err) {
+    console.error('Błąd przy dodawaniu książki:', err);
+    res.status(500).json({ message: 'Wewnętrzny błąd serwera' });
+  }
+};
+
