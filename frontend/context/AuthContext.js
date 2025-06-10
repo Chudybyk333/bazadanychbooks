@@ -1,25 +1,20 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext, useState, useContext } from 'react';
 
-export const AuthContext = createContext();
+const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null); // { username, role, user_id }
+  const [user, setUser] = useState(null);
 
   const login = (username, password) => {
-    const users = [
-      { username: 'admin', password: 'admin123', role: 'admin' },
-      { username: 'user', password: 'user123', role: 'user', user_id: 1 }
-    ];
-
-    const found = users.find(u => u.username === username && u.password === password);
-    if (found) {
-      setUser(found);
-      return true;
+    // przykładowe logowanie
+    if (username === 'admin' && password === 'admin') {
+      setUser({ name: 'Admin' });
     }
-    return false;
   };
 
-  const logout = () => setUser(null);
+  const logout = () => {
+    setUser(null);
+  };
 
   return (
     <AuthContext.Provider value={{ user, login, logout }}>
@@ -27,3 +22,5 @@ export const AuthProvider = ({ children }) => {
     </AuthContext.Provider>
   );
 };
+
+export const useAuth = () => useContext(AuthContext);
